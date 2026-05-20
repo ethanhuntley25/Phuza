@@ -131,7 +131,7 @@ object DateOfBirthUtil {
         }
     }
 
-    fun saveDob(context: Context, day: String, month: String, year: String) {
+    fun saveDob(day: String, month: String, year: String) {
         val dob = "$day $month $year"
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         FirebaseDatabase.getInstance().getReference("users")
