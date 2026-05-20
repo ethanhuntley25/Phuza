@@ -1,4 +1,4 @@
-# location-api
+# phuza-api
 
 ## Simple HTTP API for:
 
