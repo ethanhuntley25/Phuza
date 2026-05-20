@@ -174,4 +174,5 @@ export default server;
  * “Calculate Distance and Bearing between Two Latitude/Longitude Points Using Haversine Formula in JavaScript”.
  * <https://www.movable-type.co.uk/scripts/latlong.html>
  *  [accessed 19 September 2025].
+ * 
  */
