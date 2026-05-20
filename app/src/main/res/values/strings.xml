@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">Phuza</string>
+    <string name="PHUZA">PHUZA</string>
+    <string name="app_logo">PHUZA Logo</string>
+    <!-- Login, Register & Forgot Password -->
+    <string name="welcome_back">Welcome back, time to</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="don_t_have_an_account">Don’t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="first_name">First Name</string>
+    <string name="username">Username</string>
+    <string name="lets_phuza">Let\'s Phuza</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="enter_your_email_address">Please enter your email address</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="recovery_msg">we’ve sent a recovery link to your email</string>
+
+    <!-- Onboarding -->
+    <string name="setup_your_profile">Setup your profile</string>
+    <string name="step_1">STEP 1</string>
+    <string name="step_2">STEP 2</string>
+    <string name="step_3">STEP 3</string>
+    <string name="step_4">STEP 4</string>
+    <string name="step_5">STEP 5</string>
+    <string name="step_6">STEP 6</string>
+    <string name="what_is_your_date_of_birth">What is your date of birth?</string>
+    <string name="month">Month</string>
+    <string name="date">Date</string>
+    <string name="year">Year</string>
+    <string name="current_location">Current location</string>
+    <string name="location">location</string>
+    <string name="enable_location">Enable Location</string>
+    <string name="pick_your_favourite_bars">Pick your favourite bars</string>
+    <string name="you_can_only_select_up_to_3_bars">You can only select up to 3 bars</string>
+    <string name="search">Search</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="suggested">Suggested</string>
+    <string name="finding_bars">Finding Bars...</string>
+    <string name="what_is_your_dop_of_choice">What is your dop of choice?</string>
+    <string name="add_your_tjommies">Add your tjommies</string>
+    <string name="search_by_username">Search by username</string>
+    <string name="add_a_profile_photo">Add a profile photo</string>
+    <string name="avatar">avatar</string>
+    <string name="camera_placeholder">camera placeholder</string>
+    <string name="choose_an_avatar">Choose an Avatar</string>
+    <string name="upload_from_gallery">Upload from Gallery</string>
+    <string name="next">Next</string>
+    <string name="skip_for_now">Skip for now</string>
+    <string name="you_re_nready_nto_go">YOU\'RE\nREADY\nTO GO</string>
+
+
+    <!-- Dashboard -->
+    <string name="notification_icon">Notification Icon</string>
+    <string name="check_in">Check-in</string>
+    <string name="hi">Hi,</string>
+    <string name="popular_this_week">Popular this week</string>
+    <string name="bars_near_me">Bars near me</string>
+    <string name="location_marker">location_marker</string>
+    <string name="friends_fav_s">Friends fav\'s</string>
+    <string name="friends_fav_wait">Waiting for your friends to share their favourite bars.</string>
+    <string name="friends_reviews">Friends reviews</string>
+    <string name="no_reviews_yet">No reviews yet</string>
+
+
+    <string name="add_friend">Add</string>
+    <string name="requested">Requested</string>
+    <string name="following">Following</string>
+    <string name="they_follow">Follows you</string>
+    <string name="blocked">Blocked</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+
+    <!-- Profile -->
+    <string name="settings">Settings</string>
+    <string name="myDop">My Dop</string>
+    <string name="go_to_details">Go to details</string>
+    <string name="go_to_setting">Go to settings</string>
+    <string name="item_bars_visited">Bars visited</string>
+    <string name="item_liked_bars">Liked bars</string>
+    <string name="item_barlist">Barlist</string>
+    <string name="item_friends">Friends</string>
+    <string name="item_reviews">Reviews</string>
+    <string name="enabled">Enabled</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+
+    <!-- Settings list menu -->
+    <string name="setting_change_location">Change location</string>
+    <string name="setting_change_password">Change password</string>
+    <string name="setting_notification_prefs">Notification preferences</string>
+    <string name="setting_language_prefs">Language preferences</string>
+
+    <!-- Language settings -->
+    <string name="lang_english">English</string>
+    <string name="lang_isizulu">IsiZulu</string>
+    <string name="lang_afrikaans">Afrikaans</string>
+    <string name="title_language_prefs">Language Preferences</string>
+
+    <!-- Change password settings -->
+    <string name="title_change_password">Change Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="update">Update</string>
+    <string name="title_current_location">Current Location</string>
+    <string name="hint_enter_location">enter location</string>
+    <string name="set_your_location">Set your location</string>
+    <string name="select_your_dop">Select your dop</string>
+    <string name="setting_title">Setting Title</string>
+    <string name="connor_s_review">Connor’s review:</string>
+    <string name="lock_stock_had_good_music_but_it_gets_a_bit_crowded">Lock stock had good music but it gets a bit crowded</string>
+    <string name="stars">stars</string>
+    <string name="name">name</string>
+    <string name="friendfav">friendfav</string>
+    <string name="black_label">Black Label</string>
+    <string name="category">Category</string>
+    <string name="selecter">selecter</string>
+    <string name="bar_name">Bar Name</string>
+    <string name="invitations">Invitations</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="place">Place</string>
+    <string name="rating">Rating</string>
+    <string name="add_a_review">Add a Review</string>
+    <string name="add_a_phuza_pic">Add a Phuza Pic</string>
+    <string name="add_photo">add photo</string>
+</resources>

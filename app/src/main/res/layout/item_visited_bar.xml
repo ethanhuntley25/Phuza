@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="12dp"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tvBarName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/llRatingAndDate"
+        android:fontFamily="@font/sora_semibold"
+        android:textColor="@color/milk"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBarName"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/sora_regular"
+        android:textColor="@color/milk"
+        android:textSize="12sp"/>
+
+    <LinearLayout
+        android:id="@+id/llRatingAndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:gravity="end|center_vertical">
+
+        <LinearLayout
+            android:id="@+id/llStarsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            tools:ignore="UseCompundDrawables">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_star"
+                app:tint="@color/yellow"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRatingValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sora_semibold"
+            android:textColor="@color/yellow"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#2B2B2B"
+        android:layout_below="@id/tvDate"/>
+</RelativeLayout>

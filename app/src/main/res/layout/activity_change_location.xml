@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ui_background"
+    tools:context=".ChangeLocationActivity">
+
+    <!-- Header with close icon and save button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/close_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_close_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            app:tint="@color/milk"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:minWidth="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="Save"
+            android:textSize="18sp"
+            android:fontFamily="@font/sora_semibold"
+            android:textColor="@color/aquamarine"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    </RelativeLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="com.example.phuza.ChangeLocationFragment"/>
+
+</LinearLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingVertical="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/settings_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_title"
+        android:textColor="@color/milk"
+        android:textSize="18sp"/>
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_arrow_right"
+        app:tint="@color/Dark_Purple"
+        android:contentDescription="@string/go_to_setting"/>
+
+</RelativeLayout>
