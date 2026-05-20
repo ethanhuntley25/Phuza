@@ -2,11 +2,12 @@
 node_modules/
 
 # Environment files
-*.env
-.env.*    # .env.local, .env.production, etc.
+.env
+.env.*
 
-# Ignore all JSON files (caution)
-*.json
+# Firebase secrets
+serviceAccountKey.json
+firebase-adminsdk.json
 
-# Ignore local scripts
+# Local scripts
 scripts/
