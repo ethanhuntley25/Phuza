@@ -20,7 +20,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
 
-    private val TAG = "RegisterActivity"
+    private val tag = "RegisterActivity"
 
     // Firebase (default instance from google-services.json)
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -53,7 +53,7 @@ class RegisterActivity : AppCompatActivity() {
         if (pass.length < 6) { binding.tilPassword.error = "Min 6 characters"; ok = false }
         if (!ok) return
 
-        setLoading(true)
+        setLoading(loading = true)
 
         auth.createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener {
@@ -61,7 +61,7 @@ class RegisterActivity : AppCompatActivity() {
                 if (uid.isNullOrEmpty()) {
                     setLoading(false)
                     snack("Registration failed: no UID.")
-                    Log.e(TAG, "UID missing after createUser")
+                    Log.e(tag, "UID missing after createUser")
                     return@addOnSuccessListener
                 }
 
@@ -75,7 +75,7 @@ class RegisterActivity : AppCompatActivity() {
                     else -> e.localizedMessage ?: "Registration failed."
                 }
                 snack(msg)
-                Log.e(TAG, "Auth createUser failed", e)
+                Log.e(tag, "Auth createUser failed", e)
             }
     }
 
@@ -83,7 +83,7 @@ class RegisterActivity : AppCompatActivity() {
         uid: String,
         firstName: String,
         username: String,
-        email: String
+        email: String,
     ) {
         // Client object
         val profile = User(
@@ -94,7 +94,7 @@ class RegisterActivity : AppCompatActivity() {
             createdAt = 0L
         )
 
-        val updates = hashMapOf<String, Any>(
+        val updates = hashMapOf(
             "users/$uid/uid" to profile.uid,
             "users/$uid/firstName" to profile.firstName,
             "users/$uid/username" to profile.username,
@@ -111,7 +111,7 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 setLoading(false)
                 snack(e.localizedMessage ?: "Failed saving profile.")
-                Log.e(TAG, "Profile write failed at /users/$uid", e)
+                Log.e(tag, "Profile write failed at /users/$uid", e)
                 auth.currentUser?.delete()
             }
     }
@@ -135,6 +135,11 @@ class RegisterActivity : AppCompatActivity() {
     private fun goToHome() {
         startActivity(Intent(this, Onboarding1Activity::class.java))
         finish()
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
     }
 }

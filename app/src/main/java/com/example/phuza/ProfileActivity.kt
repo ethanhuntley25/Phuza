@@ -2,7 +2,6 @@ package com.example.phuza
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.phuza.R
 import com.example.phuza.data.BarUi
@@ -69,14 +68,14 @@ class ProfileActivity : BaseActivity() {
 
     }
     private fun observeUserProfile(){
-        viewModel.userProfile.observe(this){ user ->
-            user?.let {
-                binding.profileName.text = it.name ?: it.firstName ?: it.username?: "user"
+        viewModel.userProfile.observe(this){ profile ->
+            profile?.let { p ->
+                binding.profileName.text = p.name ?: p.firstName ?: p.username?: "user"
 
-                val avatarStr = it.avatar
+                val avatarStr = p.avatar
 
                 val mappedRes = avatarStr?.let { key ->
-                    AvatarUtil.avatarList.firstOrNull{ it.first == key }?.second
+                    AvatarUtil.avatarList.firstOrNull { it.first == key }?.second
                 }
                 when {
                     mappedRes != null -> {
@@ -100,8 +99,8 @@ class ProfileActivity : BaseActivity() {
                     else -> binding.avatar.setImageResource(R.drawable.avatar_no_avatar)
                 }
 
-                binding.profileLocation.text = it.location ?: this.getString(R.string.set_your_location)
-                binding.myDop.text = it.favoriteDrink ?: this.getString(R.string.select_your_dop)
+                binding.profileLocation.text = p.location ?: this.getString(R.string.set_your_location)
+                binding.myDop.text = p.favoriteDrink ?: this.getString(R.string.select_your_dop)
 
             }
         }
@@ -137,7 +136,7 @@ class ProfileActivity : BaseActivity() {
 //        setProfileTitle(binding.itemBarlist.root, "Barlist")
     }
     
-    private fun setProfileTitle(itemView: android.view.View, title:String){
+    private fun setProfileTitle(itemView: View, title:String){
         itemView.findViewById<TextView>(R.id.list_item_title)?.text = title
     }
 }

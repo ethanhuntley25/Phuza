@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class Splash3Activity : AppCompatActivity() {
@@ -14,7 +13,12 @@ class Splash3Activity : AppCompatActivity() {
         setContentView(R.layout.activity_splash3)
         window.decorView.postDelayed({
             startActivity(Intent(this, Splash4Activity::class.java))
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
             finish()
         }, 130)
     }

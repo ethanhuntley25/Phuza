@@ -12,9 +12,7 @@ import com.example.phuza.R
 import com.example.phuza.data.BarUi
 
 class BarAdapter(
-    private val userLat: Double,
-    private val userLon: Double,
-    private val onSelectionChanged: (List<BarUi>) -> Unit = {}
+    private val onSelectionChanged: (List<BarUi>) -> Unit = {},
 ) : ListAdapter<BarUi, BarAdapter.VH>(DIFF) {
     private val selectedKeys = LinkedHashSet<String>()
 
@@ -34,9 +32,9 @@ class BarAdapter(
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<BarUi>() {
             override fun areItemsTheSame(oldItem: BarUi, newItem: BarUi): Boolean =
-                oldItem.name == newItem.name &&
-                        oldItem.latitude == newItem.latitude &&
-                        oldItem.longitude == newItem.longitude
+                (oldItem.name == newItem.name) &&
+                        (oldItem.latitude == newItem.latitude) &&
+                        (oldItem.longitude == newItem.longitude)
 
             override fun areContentsTheSame(oldItem: BarUi, newItem: BarUi): Boolean = oldItem == newItem
         }

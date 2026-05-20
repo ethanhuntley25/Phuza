@@ -36,6 +36,11 @@
     <string name="current_location">Current location</string>
     <string name="location">location</string>
     <string name="enable_location">Enable Location</string>
+    <string name="finding_location">Finding your location…</string>
+    <string name="loading_friends">Loading friends…</string>
+    <string name="loading_dots">Loading…</string>
+    <string name="error_loading_bars">Error loading bars.</string>
+    <string name="plus_format">+%1$d</string>
     <string name="pick_your_favourite_bars">Pick your favourite bars</string>
     <string name="you_can_only_select_up_to_3_bars">You can only select up to 3 bars</string>
     <string name="search">Search</string>
@@ -59,6 +64,7 @@
     <string name="notification_icon">Notification Icon</string>
     <string name="check_in">Check-in</string>
     <string name="hi">Hi,</string>
+    <string name="hi_format">Hi, %1$s</string>
     <string name="popular_this_week">Popular this week</string>
     <string name="bars_near_me">Bars near me</string>
     <string name="location_marker">location_marker</string>
@@ -129,4 +135,6 @@
     <string name="add_a_review">Add a Review</string>
     <string name="add_a_phuza_pic">Add a Phuza Pic</string>
     <string name="add_photo">add photo</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="dots_format">%1$s%2$s</string>
 </resources>

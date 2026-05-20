@@ -7,12 +7,12 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.phuza.databinding.ActivityNotificationsPreferencesBinding
 import com.example.phuza.utils.NotificationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 
 class NotificationsPreferencesActivity : AppCompatActivity() {
 
@@ -23,7 +23,7 @@ class NotificationsPreferencesActivity : AppCompatActivity() {
     private val KEY_EMAIL_MASTER = "email_master_enabled"
 
     private val sharedPrefs by lazy {
-        getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE)
+        getSharedPreferences(PREFS_FILE, MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +52,7 @@ class NotificationsPreferencesActivity : AppCompatActivity() {
         binding.switchPushMaster.isChecked = isPushEnabled
 
         binding.switchPushMaster.setOnCheckedChangeListener { _, isChecked ->
-            sharedPrefs.edit().putBoolean(KEY_PUSH_MASTER, isChecked).apply()
+            sharedPrefs.edit { putBoolean(KEY_PUSH_MASTER, isChecked) }
 
             Toast.makeText(this, "Push notifications ${if(isChecked) "enabled" else "disabled"}",
                 Toast.LENGTH_SHORT).show()
@@ -62,7 +62,7 @@ class NotificationsPreferencesActivity : AppCompatActivity() {
         binding.switchEmailMaster.isChecked = isEmailEnabled
 
         binding.switchEmailMaster.setOnCheckedChangeListener { _, isChecked ->
-            sharedPrefs.edit().putBoolean(KEY_EMAIL_MASTER, isChecked).apply()
+            sharedPrefs.edit { putBoolean(KEY_EMAIL_MASTER, isChecked) }
 
             Toast.makeText(this, "Email notifications ${if(isChecked) "enabled" else "disabled"}",
                 Toast.LENGTH_SHORT).show()
@@ -82,26 +82,17 @@ class NotificationsPreferencesActivity : AppCompatActivity() {
     }
 
     private fun updateLocalPushPreference(isEnabled: Boolean){
-        sharedPrefs.edit().putBoolean(KEY_PUSH_MASTER, isEnabled).apply()
+        sharedPrefs.edit { putBoolean(KEY_PUSH_MASTER, isEnabled) }
     }
 
     private fun openAppNotificationSettings(){
-        val intent = when{
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-                }
-            }
-            else -> {
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", packageName, null)
-                }
-            }
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
         }
         try{
             startActivity(intent)
         }
-        catch (e: Exception){
+        catch (_: Exception){
             Toast.makeText(this, "Could not open system settings.", Toast.LENGTH_SHORT).show()
         }
     }

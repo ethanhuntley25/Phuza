@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -48,6 +49,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import android.graphics.Bitmap
+import androidx.core.graphics.scale
 import java.util.Locale
 
 class Onboarding1Activity : AppCompatActivity() {
@@ -117,10 +120,10 @@ class Onboarding1Activity : AppCompatActivity() {
 
         // Image pickers (Step 6)
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            if (uri != null) loadAvatarFromUri(uri)
+            uri?.let { loadAvatarFromUri(it) }
         }
         requestMediaPermsLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
+            ActivityResultContracts.RequestMultiplePermissions(),
         ) { result ->
             val granted = result.values.any { it }
             if (granted) pickImageLauncher.launch("image/*") else toast("Permission required to choose a photo")
@@ -177,7 +180,7 @@ class Onboarding1Activity : AppCompatActivity() {
 
     // Recompute and submit the filtered friends list using the latest users + statuses + incoming.
     private fun applyFriendsFilter() {
-        val state = friendsVm.usersState.value as? UiState.Success ?: return
+        val state = (friendsVm.usersState.value as? UiState.Success) ?: return
         val statuses = friendsVm.statusMap.value ?: emptyMap()
         val incoming = friendsVm.incomingSet.value ?: emptySet()
 
@@ -322,7 +325,12 @@ class Onboarding1Activity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("onboardingComplete")
         ref.setValue(true).addOnCompleteListener {
             startActivity(Intent(this, OnboardingSuccessActivity::class.java))
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
             finish()
         }
     }
@@ -332,11 +340,11 @@ class Onboarding1Activity : AppCompatActivity() {
             if (index == stepIndex) {
                 val animIn = if (forward) R.anim.slide_in_right else R.anim.slide_in_left
                 section.startAnimation(AnimationUtils.loadAnimation(this, animIn))
-                section.visibility = View.VISIBLE
-            } else if (section.visibility == View.VISIBLE) {
+                section.isVisible = true
+            } else if (section.isVisible) {
                 val animOut = if (forward) R.anim.slide_out_left else R.anim.slide_out_right
                 section.startAnimation(AnimationUtils.loadAnimation(this, animOut))
-                section.visibility = View.GONE
+                section.isVisible = false
             }
         }
 
@@ -356,7 +364,7 @@ class Onboarding1Activity : AppCompatActivity() {
                 return
             }
             if (!::barAdapter.isInitialized) {
-                barAdapter = BarAdapter(userLat = lat, userLon = lon) {  }
+                barAdapter = BarAdapter { }
                 recyclerViewBars.adapter = barAdapter
             }
             binding.progressLoadingBars.visibility = View.VISIBLE
@@ -454,7 +462,7 @@ class Onboarding1Activity : AppCompatActivity() {
         binding.btnGetLocation.setOnClickListener {
             isFindingLocation = true
             binding.btnGetLocation.isEnabled = false
-            binding.btnGetLocation.text = "Finding your location..."
+            binding.btnGetLocation.text = getString(R.string.finding_location)
 
             locationUtil.requestPermissions(this, requestPermissionsLauncher) {
                 locationUtil.checkLocationSettings(this, locationSettingsLauncher) {
@@ -491,23 +499,38 @@ class Onboarding1Activity : AppCompatActivity() {
 
     private fun resetLocationButton() {
         binding.btnGetLocation.isEnabled = true
-        binding.btnGetLocation.text = "Enable Location"
+        binding.btnGetLocation.text = getString(R.string.enable_location)
     }
 
     private fun saveLocation(lat: Double, lon: Double) {
-        try {
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val addresses = geocoder.getFromLocation(lat, lon, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val city = addresses[0].locality
-                val suburb = addresses[0].subLocality
-                val area = suburb ?: city ?: "Unknown Area"
-                FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
-                    FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid).child("location").setValue(area)
+        val geocoder = Geocoder(this, Locale.getDefault())
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocation(lat, lon, 1) { addresses ->
+                if (addresses.isNotEmpty()) {
+                    val city = addresses[0].locality
+                    val suburb = addresses[0].subLocality
+                    val area = suburb ?: city ?: "Unknown Area"
+                    FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+                        FirebaseDatabase.getInstance().getReference("users")
+                            .child(uid).child("location").setValue(area)
+                    }
                 }
             }
-        } catch (_: Exception) {}
+        } else {
+            try {
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(lat, lon, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val city = addresses[0].locality
+                    val suburb = addresses[0].subLocality
+                    val area = suburb ?: city ?: "Unknown Area"
+                    FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+                        FirebaseDatabase.getInstance().getReference("users")
+                            .child(uid).child("location").setValue(area)
+                    }
+                }
+            } catch (_: Exception) {}
+        }
     }
 
     // ----------------- Bars (Step 3) -----------------
@@ -524,7 +547,7 @@ class Onboarding1Activity : AppCompatActivity() {
     ) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
             outRect: android.graphics.Rect,
-            view: android.view.View,
+            view: View,
             parent: RecyclerView,
             state: RecyclerView.State
         ) {
@@ -583,8 +606,7 @@ class Onboarding1Activity : AppCompatActivity() {
     }
 
     private fun saveDrink() {
-        val selectedDrink = drinksAdapter.getSelectedDrink()
-        if (selectedDrink == null) return
+        val selectedDrink = drinksAdapter.getSelectedDrink() ?: return
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         FirebaseDatabase.getInstance().getReference("users")
@@ -719,10 +741,14 @@ class Onboarding1Activity : AppCompatActivity() {
         val scale = maxSide.toFloat() / largest
         val nw = (w * scale).toInt()
         val nh = (h * scale).toInt()
-        return android.graphics.Bitmap.createScaledBitmap(src, nw, nh, true)
+        return src.scale(nw, nh, filter = true)
     }
 
-    // ----------------- Back handling -----------------
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         when (currentStep) {
@@ -734,7 +760,7 @@ class Onboarding1Activity : AppCompatActivity() {
             currentStep--
             showStep(currentStep, forward = false)
         } else {
-            super.onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -746,7 +772,7 @@ class Onboarding1Activity : AppCompatActivity() {
     private fun showFriendsLoading() {
         binding.progressLoadingBars.visibility = View.VISIBLE
         binding.tvLoadingBars.visibility = View.VISIBLE
-        binding.tvLoadingBars.text = "Loading friends..."
+        binding.tvLoadingBars.text = getString(R.string.loading_friends)
     }
 
     private fun toast(msg: String) =

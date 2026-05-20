@@ -17,7 +17,7 @@ class ChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChangePasswordBinding
     private val auth = FirebaseAuth.getInstance()
-    private val TAG = "ChangePasswordActivity"
+    private val tag = "ChangePasswordActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,14 +64,16 @@ class ChangePasswordActivity : AppCompatActivity() {
         val newPass = binding.etNewPassword.text?.toString().orEmpty()
         val confirmPass = binding.etConfirmNewPassword.text?.toString().orEmpty()
 
-        if(user == null || user.email.isNullOrBlank()){
+        if (!validateInputs(oldPass, newPass, confirmPass)) return
+
+        if ((user == null) || user.email.isNullOrBlank()){
             Toast.makeText(this, "Authentication error. Please log in again", Toast.LENGTH_LONG).show()
             return
         }
 
         val credential = EmailAuthProvider.getCredential(user.email!!, oldPass)
 
-        setLoading(true)
+        setLoading(loading = true)
 
         user.reauthenticate(credential)
             .addOnSuccessListener {
@@ -83,7 +85,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                     }
                     .addOnFailureListener { e ->
                         setLoading(false)
-                        Log.e(TAG, "Password update failed: ${e.message}", e)
+                        Log.e(tag, "Password update failed: ${e.message}", e)
                         Toast.makeText(this, "Updae failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                     }
             }
@@ -93,7 +95,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                     is FirebaseAuthInvalidCredentialsException -> "The old password entered is incorrect."
                     else -> "Re-authentication failed: ${e.localizedMessage}"
                 }
-                Log.e(TAG, "Re-authenication failed: ${e.message}", e)
+                Log.e(tag, "Re-authenication failed: ${e.message}", e)
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
             }
     }

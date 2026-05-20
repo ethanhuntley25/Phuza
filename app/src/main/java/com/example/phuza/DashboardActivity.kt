@@ -77,14 +77,24 @@ class DashboardActivity : BaseActivity() {
         btnNotifications = findViewById(R.id.btnBell)
         btnNotifications.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
         }
 
         setupSnippetMap()
 
         findViewById<View>(R.id.mapSnippetTapTarget)?.setOnClickListener {
             startActivity(Intent(this, MapActivity::class.java))
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            }
         }
 
         bindUserHeader()
@@ -230,7 +240,12 @@ class DashboardActivity : BaseActivity() {
                         FirebaseAuth.getInstance().signOut()
                         Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, LoginActivity::class.java))
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                        }
                         finish()
                         true
                     }
@@ -242,7 +257,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun setHeader(firstName: String, avatarValue: String?) {
-        txtGreeting?.text = "Hi, $firstName"
+        txtGreeting?.text = getString(R.string.hi_format, firstName)
         when {
             avatarValue.isNullOrBlank() -> imgAvatar?.setImageResource(R.drawable.avatar_no_avatar)
             looksLikeBase64Image(avatarValue) -> {
@@ -267,7 +282,7 @@ class DashboardActivity : BaseActivity() {
 
     private fun setupSnippetMap() {
         val mv = mapSnippetView ?: return
-        mv.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS) {
+        mv.mapboxMap.loadStyle(Style.MAPBOX_STREETS) {
             mv.gestures.updateSettings {
                 scrollEnabled = false; rotateEnabled = false
                 pinchToZoomEnabled = false; quickZoomEnabled = false
@@ -285,7 +300,7 @@ class DashboardActivity : BaseActivity() {
         fused.lastLocation.addOnSuccessListener { loc ->
             val mv = mapSnippetView ?: return@addOnSuccessListener
             if (loc != null) {
-                mv.getMapboxMap().setCamera(
+                mv.mapboxMap.setCamera(
                     CameraOptions.Builder()
                         .center(Point.fromLngLat(loc.longitude, loc.latitude))
                         .zoom(14.5)
@@ -435,32 +450,52 @@ class DashboardActivity : BaseActivity() {
     }
 
     // ---------------------- BOTTOM NAV ----------------------
-    override fun setupBottomNav(nav: BottomNavigationView, selectedId: Int) {
-        nav.selectedItemId = selectedId
-        nav.setOnItemSelectedListener { item ->
+    override fun setupBottomNav(bottomNav: BottomNavigationView, selectedItemId: Int) {
+        bottomNav.selectedItemId = selectedItemId
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> true
                 R.id.nav_friends -> {
                     startActivity(Intent(this, FriendsActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_add_review -> {
                     startActivity(Intent(this, AddReviewActivity::class.java))
-                    overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_invitations -> {
                     startActivity(Intent(this, InvitationsActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     finish()
                     true
                 }

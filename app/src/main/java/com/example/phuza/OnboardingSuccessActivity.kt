@@ -21,7 +21,12 @@ class OnboardingSuccessActivity : AppCompatActivity() {
         window.decorView.postDelayed({
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+            }
             finish()
         }, 1500)
     }

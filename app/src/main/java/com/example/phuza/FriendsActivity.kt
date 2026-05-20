@@ -52,7 +52,7 @@ class FriendsActivity : BaseActivity() {
 
     // --- Notification permission request launcher ---
     private val requestNotifPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { granted ->
         if (granted) {
             startNotificationsListener()
@@ -128,7 +128,7 @@ class FriendsActivity : BaseActivity() {
             NotificationUtils.ensureChannel(this)
             NotificationUtils.show(this, title, text)
         } catch (se: SecurityException) {
-            toast("Error: ${se}")
+            toast("Error: $se")
         }
     }
 
@@ -140,7 +140,7 @@ class FriendsActivity : BaseActivity() {
         notifReg = col.whereEqualTo("read", false)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snap, err ->
-                if (err != null || snap == null) return@addSnapshotListener
+                if ((err != null) || (snap == null)) return@addSnapshotListener
                 for (dc in snap.documentChanges) {
                     if (dc.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
                         val type = dc.document.getString("type") ?: "notification"
@@ -168,7 +168,7 @@ class FriendsActivity : BaseActivity() {
                     null -> vm.sendRequest(id)
                     FriendshipStatus.follow -> vm.unfollow(id)
                     FriendshipStatus.requested -> {
-                        if (!incoming) vm.cancelRequest(id)
+                        vm.cancelRequest(id)
                     }
                     FriendshipStatus.following,
                     FriendshipStatus.block -> Unit
@@ -309,7 +309,7 @@ class FriendsActivity : BaseActivity() {
         }
 
         loadingLabel = TextView(this).apply {
-            text = "Loading…"
+            text = getString(R.string.loading_dots)
             setTextColor(0xFFFFFFFF.toInt())
             textSize = 16f
             setPadding(0, dp(12), 0, 0)
@@ -363,26 +363,46 @@ class FriendsActivity : BaseActivity() {
         (px * resources.displayMetrics.density).toInt()
 
     // Bottom nav helper for BaseActivity
-    override fun setupBottomNav(nav: BottomNavigationView, selectedId: Int) {
-        nav.selectedItemId = selectedId
-        nav.setOnItemSelectedListener { item ->
+    override fun setupBottomNav(bottomNav: BottomNavigationView, selectedItemId: Int) {
+        bottomNav.selectedItemId = selectedItemId
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_dashboard   -> { startActivity(Intent(this, DashboardActivity::class.java));
-                    overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
-                    finish();
+                R.id.nav_dashboard   -> { startActivity(Intent(this, DashboardActivity::class.java))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_out_right, R.anim.slide_in_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
+                    }
+                    finish()
                     true }
 
                 R.id.nav_friends     -> true
-                R.id.nav_add_review  -> { startActivity(Intent(this,AddReviewActivity::class.java));
-                    overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
-                    finish();
+                R.id.nav_add_review  -> { startActivity(Intent(this,AddReviewActivity::class.java))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    }
+                    finish()
                     true }
-                R.id.nav_invitations -> { startActivity(Intent(this, InvitationsActivity::class.java));
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                    finish();
+                R.id.nav_invitations -> { startActivity(Intent(this, InvitationsActivity::class.java))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
+                    finish()
                     true  }
-                R.id.nav_profile     -> { startActivity(Intent(this, ProfileActivity::class.java));
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                R.id.nav_profile     -> { startActivity(Intent(this, ProfileActivity::class.java))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     true }
                 else -> false
             }
@@ -393,10 +413,10 @@ class FriendsActivity : BaseActivity() {
         try {
             RetrofitInstance.api.health()
         } catch (e: Exception) {
-            toast("Error: ${e}")
+            toast("Error: $e")
         }
     }
     private fun toast(msg: String) =
-        Toast.makeText(this, msg, android.widget.Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
 

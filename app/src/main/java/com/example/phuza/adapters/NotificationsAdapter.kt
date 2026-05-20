@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseError
 import kotlin.math.abs
 
 class NotificationsAdapter(
-    private val onClick: (AppNotification) -> Unit = {}
+    private val onClick: (AppNotification) -> Unit = {},
 ) : ListAdapter<AppNotification, NotificationsAdapter.VH>(DIFF) {
 
     object DIFF : DiffUtil.ItemCallback<AppNotification>() {
@@ -44,7 +44,7 @@ class NotificationsAdapter(
 
             val name = n.fromName ?: "Someone"
             val username = n.fromUsername?.takeIf { it.isNotBlank() } ?: ""
-            val who = if (username.isNotEmpty()) "$name" else name
+            val who = if (username.isNotEmpty()) name else name
 
             val verb = when (n.type) {
                 "follow_request" -> "added you!"
@@ -58,7 +58,7 @@ class NotificationsAdapter(
                 else      -> "$who $verb"
             }
 
-            sub.text = "@${username}".takeIf { username.isNotEmpty() } ?: n.fromUid
+            sub.text = "@$username".takeIf { username.isNotEmpty() } ?: n.fromUid
 
             val millis = n.createdAt?.toDate()?.time ?: System.currentTimeMillis()
             val now = System.currentTimeMillis()

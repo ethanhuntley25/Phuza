@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.os.Build
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -53,7 +54,13 @@ open class BaseActivity : AppCompatActivity() {
             )
         }
         startActivity(intent)
-        overridePendingTransition(0, 0) // no animation between tabs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(0, 0) // no animation between tabs
+        }
         finish()
         return true
     }

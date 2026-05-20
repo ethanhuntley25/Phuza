@@ -46,7 +46,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         // Only try showing if permission exists
         val canPost = if (android.os.Build.VERSION.SDK_INT >= 33) {
             ContextCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
+                this, Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
         } else {
             true

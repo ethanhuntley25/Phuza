@@ -18,8 +18,11 @@ import com.example.phuza.R
 import com.example.phuza.data.FriendsFavBar
 import com.example.phuza.utils.ImageUtils
 
+import androidx.core.graphics.createBitmap
+import kotlin.math.min
+
 class FriendsFavBarAdapter(
-    private val bars: List<FriendsFavBar>
+    private val bars: List<FriendsFavBar>,
 ) : RecyclerView.Adapter<FriendsFavBarAdapter.VH>() {
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
@@ -49,7 +52,7 @@ class FriendsFavBarAdapter(
             val extra = item.friendAvatars.size - 2
             if (extra > 0) {
                 avatarMore.visibility = View.VISIBLE
-                avatarMore.text = "+$extra"
+                avatarMore.text = itemView.context.getString(R.string.plus_format, extra)
             } else {
                 avatarMore.visibility = View.GONE
             }
@@ -74,8 +77,8 @@ class FriendsFavBarAdapter(
 
         /** Crop a square bitmap into a circle */
         private fun getRoundedBitmap(src: Bitmap): Bitmap {
-            val size = Math.min(src.width, src.height)
-            val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            val size = min(src.width, src.height)
+            val output = createBitmap(size, size, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(output)
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             val rect = Rect(0, 0, size, size)
@@ -106,7 +109,7 @@ class FriendsFavBarAdapter(
     private fun looksLikeBase64Image(value: String): Boolean {
         if (value.startsWith("data:image")) return true
         if (value.length < 100) return false
-        return value.all { it.isLetterOrDigit() || it in "+/=\n\r" }
+        return value.all { it.isLetterOrDigit() || (it in "+/=\n\r") }
     }
 }
 

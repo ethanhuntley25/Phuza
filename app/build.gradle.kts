@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "com.example.phuza"
     compileSdk = 36
-    viewBinding.isEnabled = true
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.phuza"

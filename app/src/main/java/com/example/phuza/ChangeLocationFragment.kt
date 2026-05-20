@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -116,9 +118,9 @@ class ChangeLocationFragment : Fragment() {
     }
 
     private fun setupMapbox(){
-        binding.mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS){ style ->
-            val pinDrawable = context?.getDrawable(R.drawable.ic_location)
-            val icon = pinDrawable?.toBitmap(width = 60, height = 60)?: return@loadStyleUri
+        binding.mapView.mapboxMap.loadStyle(Style.MAPBOX_STREETS){ style ->
+            val pinDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)
+            val icon = pinDrawable?.toBitmap(width = 60, height = 60)?: return@loadStyle
             style.addImage(IMG_PIN, icon)
             if (style.getSource(SRC_SEARCH) == null){
                 style.addSource(geoJsonSource(SRC_SEARCH){})
@@ -128,7 +130,7 @@ class ChangeLocationFragment : Fragment() {
                     symbolLayer(LAYER_SEARCH, SRC_SEARCH){
                         iconImage(IMG_PIN)
                         iconAnchor(IconAnchor.BOTTOM)
-                        iconAllowOverlap(true)
+                        iconAllowOverlap(iconAllowOverlap = true)
                         iconIgnorePlacement(true)
                         iconSize(1.0)
                     }
@@ -215,28 +217,47 @@ class ChangeLocationFragment : Fragment() {
         userLat = lat
         userLon = lon
 
-        try{
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            val addresses = geocoder.getFromLocation(lat, lon, 1)
-            val area = if(!addresses.isNullOrEmpty()){
-                val city = addresses[0].locality
-                val suburb = addresses[0].subLocality
-                suburb ?: city ?: "Current Area"
-            }
-            else "Current Location"
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocation(lat, lon, 1) { addresses ->
+                val area = if (addresses.isNotEmpty()) {
+                    val city = addresses[0].locality
+                    val suburb = addresses[0].subLocality
+                    suburb ?: city ?: "Current Area"
+                } else "Current Location"
 
-            val currentFeature = MbxFeature(
-                id = "current",
-                placeName = "Current Location",
-                text = area,
-                center = listOf(lon, lat),
-                placeType = null,
-                geometry = null
-            )
-            onFeatureSelected(currentFeature)
-        }
-        catch(e: Exception){
-            toast("Could not reverse geocode location.")
+                val currentFeature = MbxFeature(
+                    id = "current",
+                    placeName = "Current Location",
+                    text = area,
+                    center = listOf(lon, lat),
+                    placeType = null,
+                    geometry = null
+                )
+                requireActivity().runOnUiThread { onFeatureSelected(currentFeature) }
+            }
+        } else {
+            try {
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(lat, lon, 1)
+                val area = if (!addresses.isNullOrEmpty()) {
+                    val city = addresses[0].locality
+                    val suburb = addresses[0].subLocality
+                    suburb ?: city ?: "Current Area"
+                } else "Current Location"
+
+                val currentFeature = MbxFeature(
+                    id = "current",
+                    placeName = "Current Location",
+                    text = area,
+                    center = listOf(lon, lat),
+                    placeType = null,
+                    geometry = null
+                )
+                onFeatureSelected(currentFeature)
+            } catch (e: Exception) {
+                toast("Could not reverse geocode location.")
+            }
         }
     }
 
@@ -253,7 +274,7 @@ class ChangeLocationFragment : Fragment() {
 
         if (lat != null && lon != null){
             updateMapPin(Point.fromLngLat(lon, lat))
-            binding.mapView.getMapboxMap().flyTo(
+            binding.mapView.mapboxMap.flyTo(
                 CameraOptions.Builder()
                     .center(Point.fromLngLat(lon, lat))
                     .zoom(14.0)
@@ -263,7 +284,7 @@ class ChangeLocationFragment : Fragment() {
     }
 
     private fun updateMapPin(point: Point){
-        binding.mapView.getMapboxMap().getStyle()?.getSourceAs<com.mapbox.maps.extension.style.sources.generated.GeoJsonSource>(SRC_SEARCH)
+        binding.mapView.mapboxMap.style?.getSourceAs<com.mapbox.maps.extension.style.sources.generated.GeoJsonSource>(SRC_SEARCH)
             ?.featureCollection(FeatureCollection.fromFeatures(listOf(Feature.fromGeometry(point))))
     }
 
@@ -329,7 +350,7 @@ class ChangeLocationFragment : Fragment() {
         saveButton?.visibility = View.GONE
         searchAdapter.clearResults()
 
-        binding.mapView.getMapboxMap().getStyle()?.getSourceAs<com.mapbox.maps.extension.style.sources.generated.GeoJsonSource>(SRC_SEARCH)
+        binding.mapView.mapboxMap.style?.getSourceAs<com.mapbox.maps.extension.style.sources.generated.GeoJsonSource>(SRC_SEARCH)
             ?.featureCollection(FeatureCollection.fromFeatures(emptyList()))
     }
 

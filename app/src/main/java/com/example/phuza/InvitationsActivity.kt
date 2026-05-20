@@ -24,7 +24,6 @@ class InvitationsActivity : BaseActivity() {
         setupBottomNav(bottomNav, R.id.nav_invitations)
     }
     private fun startDotAnimation() {
-        val baseText = "Coming Soon"
         val maxDots = 4
 
         dotAnimator = ValueAnimator.ofInt(0, maxDots)
@@ -32,7 +31,8 @@ class InvitationsActivity : BaseActivity() {
         dotAnimator.repeatCount = ValueAnimator.INFINITE
         dotAnimator.addUpdateListener { animation ->
             val dots = animation.animatedValue as Int
-            tvComingSoon.text = baseText + ".".repeat(dots)
+            val baseText = getString(R.string.coming_soon)
+            tvComingSoon.text = getString(R.string.dots_format, baseText, ".".repeat(dots))
         }
         dotAnimator.start()
     }
@@ -43,32 +43,52 @@ class InvitationsActivity : BaseActivity() {
     }
 
 
-    override fun setupBottomNav(nav: BottomNavigationView, selectedId: Int) {
-        nav.selectedItemId = selectedId
-        nav.setOnItemSelectedListener { item ->
+    override fun setupBottomNav(bottomNav: BottomNavigationView, selectedItemId: Int) {
+        bottomNav.selectedItemId = selectedItemId
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> {
                     startActivity(Intent(this, DashboardActivity::class.java))
-                    overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_out_right, R.anim.slide_in_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_friends -> {
                     startActivity(Intent(this, FriendsActivity::class.java))
-                    overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_out_right, R.anim.slide_in_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_add_review -> {
                     startActivity(Intent(this, AddReviewActivity::class.java))
-                    overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_invitations -> true
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     true
                 }
                 else -> false

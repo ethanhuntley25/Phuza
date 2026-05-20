@@ -10,7 +10,7 @@ import com.example.phuza.R
 import com.example.phuza.data.BarUi
 
 class BarDashboardAdapter(
-    private val bars: List<BarUi>
+    private val bars: List<BarUi>,
 ) : RecyclerView.Adapter<BarDashboardAdapter.VH>() {
 
     override fun getItemCount(): Int = Int.MAX_VALUE
@@ -19,7 +19,7 @@ class BarDashboardAdapter(
         return position % bars.size
     }
 
-    inner class VH(view: View) : RecyclerView.ViewHolder(view) {
+    class VH(view: View) : RecyclerView.ViewHolder(view) {
         private val img: ImageView = view.findViewById(R.id.image)
         private val name: TextView = view.findViewById(R.id.name)
 

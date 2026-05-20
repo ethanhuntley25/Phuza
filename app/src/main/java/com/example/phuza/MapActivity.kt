@@ -12,7 +12,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.example.phuza.api.RouteViewModel
 import com.example.phuza.api.UiState
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -67,7 +66,7 @@ class MapActivity : AppCompatActivity() {
         findViewById<MaterialToolbar>(R.id.topBar)
             .setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS) { style ->
+        mapView.mapboxMap.loadStyle(Style.MAPBOX_STREETS) { style ->
             ensurePinStyle(style)
             askForLocation()
         }
@@ -91,7 +90,7 @@ class MapActivity : AppCompatActivity() {
                 symbolLayer(LAYER_PUBS, SRC_PUBS) {
                     iconImage(IMG_PIN)
                     iconAnchor(IconAnchor.BOTTOM)
-                    iconAllowOverlap(true)
+                    iconAllowOverlap(iconAllowOverlap = true)
                     iconIgnorePlacement(true)
                     iconSize(1.0)
                 }
@@ -105,7 +104,7 @@ class MapActivity : AppCompatActivity() {
                 is UiState.Loading -> toast("Finding nearby pubs…")
                 is UiState.Error -> toast(state.message)
                 is UiState.Success -> {
-                    val style = mapView.getMapboxMap().getStyle() ?: return@observe
+                    val style = mapView.mapboxMap.style ?: return@observe
 
                     val features = state.data.pubs.map { pub ->
                         Feature.fromGeometry(
@@ -120,10 +119,10 @@ class MapActivity : AppCompatActivity() {
                         Point.fromLngLat(it.coordinates.longitude, it.coordinates.latitude)
                     }
                     if (points.isNotEmpty()) {
-                        val camera = mapView.getMapboxMap().cameraForCoordinates(
+                        val camera = mapView.mapboxMap.cameraForCoordinates(
                             points, EdgeInsets(100.0, 100.0, 100.0, 100.0), null, null
                         )
-                        mapView.getMapboxMap().setCamera(camera)
+                        mapView.mapboxMap.setCamera(camera)
                     }
                 }
                 else -> {}
@@ -157,7 +156,7 @@ class MapActivity : AppCompatActivity() {
 
             if (!centeredOnce) {
                 centeredOnce = true
-                mapView.getMapboxMap().flyTo(
+                mapView.mapboxMap.flyTo(
                     CameraOptions.Builder().center(point).zoom(14.5).build()
                 )
                 // Auto-discover pubs near current location
@@ -168,7 +167,7 @@ class MapActivity : AppCompatActivity() {
 
     private fun centerOnUser() {
         lastPoint?.let {
-            mapView.getMapboxMap().flyTo(
+            mapView.mapboxMap.flyTo(
                 CameraOptions.Builder().center(it).zoom(15.0).build()
             )
         } ?: askForLocation()
@@ -178,8 +177,8 @@ class MapActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     // MapView lifecycle
-    override fun onStart() { super.onStart(); mapView.onStart() }
-    override fun onStop() { mapView.onStop(); super.onStop() }
-    override fun onLowMemory() { super.onLowMemory(); mapView.onLowMemory() }
-    override fun onDestroy() { mapView.onDestroy(); super.onDestroy() }
+    override fun onStart() { super.onStart() }
+    override fun onStop() { super.onStop() }
+    override fun onLowMemory() { super.onLowMemory() }
+    override fun onDestroy() { super.onDestroy() }
 }

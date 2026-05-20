@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.phuza.R
 import com.example.phuza.api.MbxFeature
-class LocationSearchAdapter (
+class LocationSearchAdapter(
     private var results: List<MbxFeature>,
-    private val onFeatureSelected: (MbxFeature) -> Unit
-) : RecyclerView.Adapter<LocationSearchAdapter.SearchViewHolder>(){
+    private val onFeatureSelected: (MbxFeature) -> Unit,
+) : RecyclerView.Adapter<LocationSearchAdapter.SearchViewHolder>() {
 
     class SearchViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val placeName: TextView = view.findViewById(R.id.tv_place_name)

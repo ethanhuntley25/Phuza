@@ -57,7 +57,7 @@ class NotificationsActivity : AppCompatActivity() {
         reg?.remove()
         reg = col.orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snap, err ->
-                if (err != null || snap == null) return@addSnapshotListener
+                if ((err != null) || (snap == null)) return@addSnapshotListener
                 val items = snap.documents.map { AppNotification.from(it) }
                 adapter.submitList(items)
                 if (items.isEmpty()) {

@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
         }
         if (hasError) return
 
-        showLoading(true)
+        showLoading(loading = true)
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -122,14 +122,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleGoogleCredential(credential: Credential) {
-        if (credential is CustomCredential &&
-            credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+        if ((credential is CustomCredential) &&
+            (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)
         ) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             val idToken = googleIdTokenCredential.idToken
 
             val firebaseCred = GoogleAuthProvider.getCredential(idToken, null)
-            showLoading(true)
+            showLoading(loading = true)
             auth.signInWithCredential(firebaseCred)
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
@@ -137,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
                         Snackbar.make(
                             binding.root,
                             task.exception?.localizedMessage ?: "Google sign-in failed.",
-                            Snackbar.LENGTH_LONG
+                            Snackbar.LENGTH_LONG,
                         ).show()
                         return@addOnCompleteListener
                     }
@@ -165,7 +165,7 @@ class LoginActivity : AppCompatActivity() {
                 ?: email.substringBefore('@')
             val username = email.substringBefore('@').lowercase()
 
-            val updates = hashMapOf<String, Any>(
+            val updates = hashMapOf(
                 "users/$uid/uid" to uid,
                 "users/$uid/firstName" to firstName,
                 "users/$uid/username" to username,
@@ -206,13 +206,23 @@ class LoginActivity : AppCompatActivity() {
     private fun routeToOnboarding() {
         startActivity(Intent(this, Onboarding1Activity::class.java))
         finish()
-        overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        }
     }
 
     private fun routeToDashboard() {
         startActivity(Intent(this, DashboardActivity::class.java))
         finish()
-        overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(R.anim.fade_in_bottom, R.anim.fade_out_bottom)
+        }
     }
 
     // ---------------- UI helpers ----------------

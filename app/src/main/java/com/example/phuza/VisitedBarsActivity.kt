@@ -44,16 +44,16 @@ class VisitedBarsActivity : AppCompatActivity() {
 
         rtdb.child("users").child(uid).child("reviews")
             .orderByChild("timestamp")
-            .addListenerForSingleValueEvent(object : ValueEventListener{
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val reviews = snapshot.children.mapNotNull {
+                    val reviews = snapshot.children.asSequence().mapNotNull {
                        try{
                            it.getValue(Review::class.java)
                        } catch(e: Exception){
                            Log.e("VisitedBars", "Failed to map review: ${it.key}, Error: ${e.message}")
                            null
                        }
-                    }.sortedByDescending { it.timestamp }
+                    }.sortedByDescending { it.timestamp }.toList()
 
                     adapter.submitList(reviews)
                     if(reviews.isEmpty()){
@@ -66,7 +66,7 @@ class VisitedBarsActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    binding.tvEmptyState.text = "Error loading bars."
+                    binding.tvEmptyState.text = getString(R.string.error_loading_bars)
                     binding.tvEmptyState.visibility = View.VISIBLE
                 }
             })

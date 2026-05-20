@@ -17,6 +17,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.scale
+import android.view.View
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -51,11 +53,11 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupImagePickers() {
         // Registers the launcher to pick an image from the gallery
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            if (uri != null) loadAvatarFromUri(uri)
+            uri?.let { loadAvatarFromUri(it) }
         }
         // Registers the launcher to request media permissions
         requestMediaPermsLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
+            ActivityResultContracts.RequestMultiplePermissions(),
         ) { result ->
             val granted = result.values.any { it }
             if (granted) pickImageLauncher.launch("image/*") else toast("Permission required to choose a photo")
@@ -72,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
 
         userListener = firestore.collection("users").document(userId)
             .addSnapshotListener { snapshot, e ->
-                if (e != null || snapshot == null || !snapshot.exists()) {
+                if ((e != null) || (snapshot == null) || (!snapshot.exists())) {
                     binding.avatar.setImageResource(R.drawable.avatar_no_avatar)
                     return@addSnapshotListener
                 }
@@ -164,7 +166,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     // helper function to find and set the title on the included layout
-    private fun setSettingTitle(itemView: android.view.View, title: String) {
+    private fun setSettingTitle(itemView: View, title: String) {
         itemView.findViewById<TextView>(R.id.settings_item_title)?.text = title
     }
 
@@ -240,7 +242,7 @@ class SettingsActivity : AppCompatActivity() {
         val scale = maxSide.toFloat() / largest
         val nw = (w * scale).toInt()
         val nh = (h * scale).toInt()
-        return android.graphics.Bitmap.createScaledBitmap(src, nw, nh, true)
+        return src.scale(nw, nh, filter = true)
     }
 
     private fun toast(msg: String) =

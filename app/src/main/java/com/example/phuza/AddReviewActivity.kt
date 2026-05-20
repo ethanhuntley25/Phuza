@@ -34,7 +34,7 @@ class AddReviewActivity : BaseActivity() {
 
     // Camera preview
     private val takePicturePreview = registerForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
+        ActivityResultContracts.TakePicturePreview(),
     ) { bitmap -> if (bitmap != null) onBitmapChosen(bitmap) else toast("No photo captured") }
 
     // Gallery picker
@@ -71,7 +71,12 @@ class AddReviewActivity : BaseActivity() {
             val intent = Intent(this, DashboardActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
             finish()
         }
     }
@@ -185,7 +190,7 @@ class AddReviewActivity : BaseActivity() {
             )
 
             isSaving = true
-            setSavingUi(true)
+            setSavingUi(saving = true)
 
             lifecycleScope.launch {
                 try {
@@ -211,7 +216,12 @@ class AddReviewActivity : BaseActivity() {
                     val intent = Intent(this@AddReviewActivity, DashboardActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    }
                     finish()
                 } catch (e: Exception) {
                     toast("Failed to save: ${e.message}")
@@ -230,32 +240,52 @@ class AddReviewActivity : BaseActivity() {
     }
 
     // ---------------------- BOTTOM NAV ----------------------
-    override fun setupBottomNav(nav: BottomNavigationView, selectedId: Int) {
-        nav.selectedItemId = selectedId
-        nav.setOnItemSelectedListener { item ->
+    override fun setupBottomNav(bottomNav: BottomNavigationView, selectedItemId: Int) {
+        bottomNav.selectedItemId = selectedItemId
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> {
                     startActivity(Intent(this, DashboardActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_left, R.anim.slide_out_right)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_friends -> {
                     startActivity(Intent(this, FriendsActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_left, R.anim.slide_out_right)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_add_review -> true
                 R.id.nav_invitations -> {
                     startActivity(Intent(this, InvitationsActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     finish()
                     true
                 }
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    }
                     finish()
                     true
                 }

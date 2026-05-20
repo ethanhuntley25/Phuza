@@ -20,10 +20,14 @@ class DrinksAdapter(private var drinks: List<Drink>) :
         init {
             itemView.setOnClickListener {
                 val previousPosition = selectedPosition
-                selectedPosition = adapterPosition
+                selectedPosition = bindingAdapterPosition
 
-                notifyItemChanged(previousPosition)
-                notifyItemChanged(selectedPosition)
+                if (selectedPosition != RecyclerView.NO_POSITION) {
+                    if (previousPosition != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(previousPosition)
+                    }
+                    notifyItemChanged(selectedPosition)
+                }
             }
         }
     }

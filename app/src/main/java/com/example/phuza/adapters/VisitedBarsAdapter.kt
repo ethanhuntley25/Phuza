@@ -40,7 +40,7 @@ class VisitedBarsAdapter : ListAdapter<Review, VisitedBarsAdapter.VH>(DIFF) {
                 val star = ImageView(itemView.context).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
                     ).apply {
                         width = 40
                         height = 40

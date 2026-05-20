@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.phuza.api.RetrofitInstance
 import kotlinx.coroutines.launch
@@ -24,7 +22,12 @@ class MainActivity : AppCompatActivity() {
         // Delay then go to Splash1
         window.decorView.postDelayed({
             startActivity(Intent(this, Splash1Activity::class.java))
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
             finish()
         }, 130)
     }
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 private suspend fun wakeServer() {
     try {
         RetrofitInstance.api.health()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
     }
 }
 
